@@ -22,7 +22,7 @@ public class PersonajesEntity {
     private Integer peso;
     private String historia;
 
-    @ManyToMany(mappedBy = "personaje")
+    @ManyToMany(mappedBy = "personaje",  cascade = CascadeType.ALL)
     private Set<PeliculaEntity> peliculas = new HashSet<>();
 
 

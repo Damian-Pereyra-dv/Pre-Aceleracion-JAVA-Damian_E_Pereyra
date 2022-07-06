@@ -2,6 +2,7 @@ package com.alkemy.disney.disney.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -21,13 +22,24 @@ public class PeliculaEntity {
     private Long id;
     private String imagen;
     private String nombre;
-    private Date creation_date;
+
+    @Column(name= "fecha_creacion")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    private Date fechaCreacion;
 
     @Min(1)
     @Max(5)
     private Integer rating;
 
-    @ManyToMany
+    @ManyToMany (
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable (
+            name ="personajes_pelicula",
+            joinColumns = @JoinColumn(name = "pelicula_id"),
+            inverseJoinColumns = @JoinColumn(name = "personaje_id"))
     private Set<PersonajesEntity> personaje = new HashSet<>();
 
 }
