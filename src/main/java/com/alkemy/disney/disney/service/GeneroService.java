@@ -1,17 +1,12 @@
 package com.alkemy.disney.disney.service;
 
 import com.alkemy.disney.disney.dto.GeneroDTO;
-import org.springframework.stereotype.Service;
 
-@Service
-public class GeneroService {
+import java.util.List;
 
-  public GeneroDTO save (GeneroDTO dto) {
+public interface GeneroService {
+    GeneroDTO save (GeneroDTO dto) ;
 
-      //TODO:guardar CONTINENTE
-      System.out.println("gaurdar genero");
-      return dto;
-  }
-
+    List<GeneroDTO> getAllGeneros  ();
 
 }

@@ -19,7 +19,7 @@ public class GeneroEntity {
     private String imagen;
     private String nombre;
 
-    @ManyToMany
+    @ManyToOne
     private Set<PeliculaEntity> peliculas = new HashSet<>();
 
 }
