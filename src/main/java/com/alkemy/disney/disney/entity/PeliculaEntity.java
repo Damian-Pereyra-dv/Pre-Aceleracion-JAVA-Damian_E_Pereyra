@@ -31,6 +31,15 @@ public class PeliculaEntity {
     @Max(5)
     private Integer rating;
 
+    @ManyToOne (
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinColumn(name = "genero_id")
+    private GeneroEntity Genero;
+
+
     @ManyToMany (
             cascade = {
                     CascadeType.PERSIST,
