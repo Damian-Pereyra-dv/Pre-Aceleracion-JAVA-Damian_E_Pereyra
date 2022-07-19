@@ -14,16 +14,19 @@ import java.util.Set;
 @Setter
 public class PersonajesEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imagen;
     private String nombre;
     private Integer edad;
-    private Integer peso;
+    private Float peso;
     private String historia;
 
-    @ManyToMany(mappedBy = "personaje",  cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "personajes", fetch = FetchType.LAZY, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH})
     private Set<PeliculaEntity> peliculas = new HashSet<>();
-
 
 }

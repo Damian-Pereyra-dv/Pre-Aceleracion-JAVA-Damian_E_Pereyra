@@ -14,12 +14,17 @@ import java.util.Set;
 @Setter
 public class GeneroEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String imagen;
+    @Column(unique = true)
     private String nombre;
+    private String imagen;
 
-    @OneToMany
+    @ManyToMany(mappedBy = "genero", fetch = FetchType.LAZY, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH})
     private Set<PeliculaEntity> peliculas = new HashSet<>();
 
 }

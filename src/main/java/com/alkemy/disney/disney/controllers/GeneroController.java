@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -15,19 +16,43 @@ import java.util.List;
 public class GeneroController {
 
     @Autowired
-    private GeneroService generoService;
+    private GeneroServiceImpl generoService;
 
-    @GetMapping
-    public ResponseEntity <List<GeneroDTO>> getAll() {
-    List<GeneroDTO> generos = generoService.getAllGeneros();
-    return ResponseEntity.ok().body(generos);
-
-    }
-
+    // Create
     @PostMapping
-    public ResponseEntity<GeneroDTO> save(@RequestBody GeneroDTO generos ) {
-        GeneroDTO generoGuardado = generoService.save(generos);
-        return ResponseEntity.status(HttpStatus.CREATED).body(generoGuardado);
+    public ResponseEntity<GeneroDTO> saveGenero(@RequestBody GeneroDTO generoDTO) {
+        GeneroDTO genero = generoService.save(generoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(genero);
     }
+
+    // Update
+    @PutMapping
+    public ResponseEntity<GeneroDTO> updateGenre(@RequestBody GeneroDTO generoDTO) {
+        GeneroDTO genero = generoService.updateGenero(generoDTO);
+        return ResponseEntity.ok(genero);
+    }
+
+    // Delete
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteGenre(@PathVariable Long id) throws SQLException {
+        generoService.deleteGenero(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // Get by id
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<GeneroDTO> getGenre(@PathVariable Long id) {
+        GeneroDTO genre = generoService.getGenero(id);
+        return ResponseEntity.ok(genre);
+    }
+
+    // Get all
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<GeneroDTO>> getAllGeneros() {
+        List<GeneroDTO> generos = generoService.getAllGeneros();
+        return ResponseEntity.ok(generos);
+    }
+
+
 
 }
