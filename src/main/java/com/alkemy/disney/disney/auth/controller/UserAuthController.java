@@ -13,51 +13,42 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth")
+@Validated
 public class UserAuthController {
 
-    private final UserDetailsCustomService userDetailsService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtTokenUtil;
+    private UserDetailsCustomService userDetailsCustomService;
+
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserAuthController(UserDetailsCustomService userDetailsService, AuthenticationManager authenticationManager, JwtUtils jwtTokenUtil) {
-        this.userDetailsService = userDetailsService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenUtil = jwtTokenUtil;
+    public UserAuthController(UserDetailsCustomService userDetailsCustomService,
+                              PasswordEncoder passwordEncoder) {
+        this.userDetailsCustomService = userDetailsCustomService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody UserDTO user) throws Exception {
-        this.userDetailsService.save(user);
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserDTO userDTO) {
+        userDetailsCustomService.register(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authRequest) throws Exception {
-
-        UserDetails userDetails;
-
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-            userDetails = (UserDetails) auth.getPrincipal();
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody @NotNull
+                                                        AuthenticationRequest authRequest) {
+        return ResponseEntity.ok(userDetailsCustomService.login(authRequest));
     }
 
 }

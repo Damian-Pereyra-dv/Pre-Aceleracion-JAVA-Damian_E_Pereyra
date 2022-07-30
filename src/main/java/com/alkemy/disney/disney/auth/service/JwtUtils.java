@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtUtils {
+public class    JwtUtils {
 
     private String SECRET_KEY = "secret";
 
